@@ -44,9 +44,9 @@ def get_access_token():
 
 def make_zoho_api_get_request(endpoint):
     zoho_token = get_access_token()
-    print(zoho_token)
+    # print(zoho_token)
     headers = {"Authorization": f"Zoho-oauthtoken {zoho_token}"}
     response = requests.get(endpoint, headers=headers)
     return response.json()
 
-pprint.pprint(make_zoho_api_get_request(ZOHO_API_CRM_URL))
+# pprint.pprint(make_zoho_api_get_request(ZOHO_API_CRM_URL))
