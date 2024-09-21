@@ -4,9 +4,14 @@ from telegram.ext import ApplicationBuilder, MessageHandler, filters, CommandHan
 import os
 from dotenv import load_dotenv
 
+from zoho_tools import make_zoho_api_get_request
+
 
 load_dotenv()
+
+
 ADMIN_BOT_TOKEN = os.getenv("ADMIN_BOT_TOKEN")
+ZOHO_API_CRM_URL = os.getenv("ZOHO_API_CRM_URL")
 
 
 async def hello(update: Update, context):
@@ -35,7 +40,22 @@ async def begin(update: Update, context):
 
 async def button_handler(update: Update, context):
     query = update.callback_query
-    await query.message.reply_text(text=f"You chose {query.data}", reply_markup=main_menu_keyboard())
+    if query.data == "get_leads":
+        leads = make_zoho_api_get_request(ZOHO_API_CRM_URL)
+        keyboard = []
+        for lead in leads["data"]:
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        f"{lead['First_Name']} {lead['Last_Name']}: {lead['Email']}", callback_data=f"lead_{lead['id']}"
+                    )
+                ]
+            )
+        keyboard.append([InlineKeyboardButton("Back", callback_data="back")])
+        await query.edit_message_text(text="Select a lead", reply_markup=InlineKeyboardMarkup(keyboard))
+    else:
+        # await query.answer()
+        await query.message.reply_text(text=f"You chose {query.data}", reply_markup=main_menu_keyboard())
 
 
 def main():
