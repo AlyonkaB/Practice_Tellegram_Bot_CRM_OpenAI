@@ -50,3 +50,22 @@ def make_zoho_api_get_request(endpoint):
     return response.json()
 
 # pprint.pprint(make_zoho_api_get_request(ZOHO_API_CRM_URL))
+
+
+def create_leads(user_data: dict):
+    zoho_token = get_access_token()
+    headers = {"Authorization": f"Zoho-oauthtoken {zoho_token}"}
+    data = {
+        "data": [
+            {
+                "First_Name": user_data.get("name"),
+                "Last_Name": "Last name",
+                "Company": "Test company",
+                "Email": user_data.get("email"),
+                "City": user_data.get("city"),
+                "Description": user_data.get("awaiting_feedback"),
+            }
+        ]
+    }
+    response = requests.post(ZOHO_API_CRM_URL, headers=headers, json=data)
+    return response.json()

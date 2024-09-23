@@ -11,6 +11,7 @@ from telegram.ext import (ApplicationBuilder,
                           ContextTypes,
                           ConversationHandler)
 
+from zoho_tools import create_leads
 
 load_dotenv()
 
@@ -76,7 +77,7 @@ async def ask_feedback_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     feedback = update.message.text
     context.user_data["awaiting_feedback"] = feedback
     await update.message.reply_text(text="Thank you for your feedback")
-    # create lead
+    create_leads(context.user_data)
     await update.message.reply_text(
         "Please choose an option:",
         reply_markup=main_keyboard()
