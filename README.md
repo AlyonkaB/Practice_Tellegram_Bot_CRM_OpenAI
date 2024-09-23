@@ -24,7 +24,7 @@ pip3 install -r requirements.txt
 
 3. Create two new Telegram bots by talking to the `@BotFather` bot and follow the instructions to obtain an API tokens ADMIN_BOT_TOKEN and SUPPORT_BOT_TOKEN
 
-4. Register account in Zoho CRM and obtain app credentials ZOHO_REFRESH_TOKEN, ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET
+4. Register account in Zoho CRM and obtain app credentials ZOHO_REFRESH_TOKEN, ZOHO_ACCESS_TOKEN,  ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET
 
 5. Register OpenAI API account and obtain OPENAI_API_KEY
 
@@ -33,9 +33,10 @@ pip3 install -r requirements.txt
 ```
 ADMIN_BOT_TOKEN=
 SUPPORT_BOT_TOKEN=
-ZOHO_API_TOKEN=
-ZOHO_API_URL=https://www.zohoapis.eu/crm/v2/Leads
+ZOHO_API_TOKEN_URL=https://accounts.zoho.eu/oauth/v2/token
+ZOHO_API_CRM_URL=https://www.zohoapis.eu/crm/v2/Leads
 ZOHO_REFRESH_TOKEN=
+ZOHO_ACCESS_TOKEN = 
 ZOHO_CLIENT_ID=
 ZOHO_CLIENT_SECRET=
 OPENAI_API_KEY=
