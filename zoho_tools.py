@@ -1,5 +1,5 @@
 import os
-import pprint
+# import pprint
 
 import requests
 from dotenv import load_dotenv
@@ -22,7 +22,10 @@ def get_refresh_token():
         "client_secret": ZOHO_CLIENT_SECRET,
         "code": "1000.d504933f513c6c47956f45c4d1614ee8.ebe7fe609a29f454164358816cb212f1",
     }
-    url = f"{ZOHO_API_TOKEN_URL}?grant_type={body['grant_type']}&client_id={body['client_id']}&client_secret={body['client_secret']}&code={body['code']}"
+    url = (f"{ZOHO_API_TOKEN_URL}?grant_type={body['grant_type']}"
+           f"&client_id={body['client_id']}"
+           f"&client_secret={body['client_secret']}"
+           f"&code={body['code']}")
     response = requests.post(url)
     return response.json()
 
@@ -48,6 +51,7 @@ def make_zoho_api_get_request(endpoint):
     headers = {"Authorization": f"Zoho-oauthtoken {zoho_token}"}
     response = requests.get(endpoint, headers=headers)
     return response.json()
+
 
 # pprint.pprint(make_zoho_api_get_request(ZOHO_API_CRM_URL))
 

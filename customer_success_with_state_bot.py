@@ -1,15 +1,15 @@
 import os
 from dotenv import load_dotenv
-from telegram import (Update,
-                      InlineKeyboardButton,
-                      InlineKeyboardMarkup)
-from telegram.ext import (ApplicationBuilder,
-                          MessageHandler,
-                          filters,
-                          CommandHandler,
-                          CallbackQueryHandler,
-                          ContextTypes,
-                          ConversationHandler)
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    ApplicationBuilder,
+    MessageHandler,
+    filters,
+    CommandHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+    ConversationHandler,
+)
 
 from zoho_tools import create_leads
 
@@ -26,11 +26,7 @@ ASK_FEEDBACK_TEXT = 4
 
 def main_keyboard():
     keyboard = [
-        [InlineKeyboardButton(
-            "Submit Feedback",
-            callback_data="submit_feedback"
-        )
-        ]
+        [InlineKeyboardButton("Submit Feedback", callback_data="submit_feedback")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     return reply_markup
@@ -39,7 +35,7 @@ def main_keyboard():
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Welcome! This is customer support bot. Please choose an option:",
-        reply_markup=main_keyboard()
+        reply_markup=main_keyboard(),
     )
     return ASK_FEEDBACK
 
@@ -79,8 +75,7 @@ async def ask_feedback_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text="Thank you for your feedback")
     create_leads(context.user_data)
     await update.message.reply_text(
-        "Please choose an option:",
-        reply_markup=main_keyboard()
+        "Please choose an option:", reply_markup=main_keyboard()
     )
     return ASK_FEEDBACK
 
@@ -94,7 +89,9 @@ def main():
             ASK_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_name)],
             ASK_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_email)],
             ASK_CITY: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_city)],
-            ASK_FEEDBACK_TEXT: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_feedback_text)],
+            ASK_FEEDBACK_TEXT: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, ask_feedback_text)
+            ],
         },
         fallbacks=[CommandHandler("start", start)],
     )
@@ -104,4 +101,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
