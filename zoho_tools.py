@@ -69,3 +69,31 @@ def create_leads(user_data: dict):
     }
     response = requests.post(ZOHO_API_CRM_URL, headers=headers, json=data)
     return response.json()
+
+
+def update_lead(lead_id: str, user_data: dict):
+    zoho_token = get_access_token()
+    headers = {"Authorization": f"Zoho-oauthtoken {zoho_token}"}
+    data = {
+        "data": [
+            {
+                "First_Name": user_data.get("name"),
+                "Last_Name": user_data.get("last_name"),
+                "Company": user_data.get("company"),
+                "Email": user_data.get("email"),
+                "City": user_data.get("city"),
+                "Description": user_data.get("awaiting_feedback"),
+            }
+        ]
+    }
+    endpoint = f"{ZOHO_API_CRM_URL}/{lead_id}"
+    response = requests.put(endpoint, headers=headers, json=data)
+    return response.json()
+
+
+def delete_lead(lead_id: str):
+    zoho_token = get_access_token()
+    headers = {"Authorization": f"Zoho-oauthtoken {zoho_token}"}
+    endpoint = f"{ZOHO_API_CRM_URL}?ids={lead_id}"
+    response = requests.delete(endpoint, headers=headers)
+    return response.json()
