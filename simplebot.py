@@ -1,61 +1,61 @@
-from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton, Bot
-from telegram.ext import ApplicationBuilder, MessageHandler, filters, CommandHandler, CallbackQueryHandler
+from telegram import Update, InlineKeyboardMarkup
+from telegram.ext import (ApplicationBuilder,
+                          CommandHandler,
+                          CallbackQueryHandler)
 
 import os
 from dotenv import load_dotenv
 
-from zoho_tools import make_zoho_api_get_request
+from keyboards import main_menu_keyboard, list_leads_keyboard
+from zoho_tools import make_zoho_api_get_request, delete_lead
 
 
 load_dotenv()
-
 
 ADMIN_BOT_TOKEN = os.getenv("ADMIN_BOT_TOKEN")
 ZOHO_API_CRM_URL = os.getenv("ZOHO_API_CRM_URL")
 
 
-async def hello(update: Update, context):
+async def hello(update: Update):
     message_text = update.message.text
-    await update.message.reply_text(f"Hello, I'v got your message. \\ {message_text}")
-
-
-def main_menu_keyboard():
-    keybord = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("Button 1", callback_data="button_1")],
-            [InlineKeyboardButton("Button 2", callback_data="button_2")],
-            [InlineKeyboardButton("Get leads", callback_data="get_leads")],
-            [
-                InlineKeyboardButton("Button 4", callback_data="button_4"),
-                InlineKeyboardButton("Button 5", callback_data="button_5"),
-            ],
-        ]
+    await update.message.reply_text(
+        f"Hello, I'v got your message."
+        f" \\ {message_text}"
     )
-    return keybord
 
 
 async def begin(update: Update, context):
-    await update.message.reply_text("Choose one button", reply_markup=main_menu_keyboard())
+    await update.message.reply_text(
+        "Choose one button",
+        reply_markup=main_menu_keyboard()
+    )
 
 
 async def button_handler(update: Update, context):
     query = update.callback_query
+    leads = make_zoho_api_get_request(ZOHO_API_CRM_URL)
+    list_lead_id = [lead['id'] for lead in leads["data"]]
+
     if query.data == "get_leads":
-        leads = make_zoho_api_get_request(ZOHO_API_CRM_URL)
-        keyboard = []
-        for lead in leads["data"]:
-            keyboard.append(
-                [
-                    InlineKeyboardButton(
-                        f"{lead['First_Name']} {lead['Last_Name']}: {lead['Email']}", callback_data=f"lead_{lead['id']}"
-                    )
-                ]
-            )
-        keyboard.append([InlineKeyboardButton("Back", callback_data="back")])
-        await query.edit_message_text(text="Select a lead", reply_markup=InlineKeyboardMarkup(keyboard))
-    else:
-        # await query.answer()
-        await query.message.reply_text(text=f"You chose {query.data}", reply_markup=main_menu_keyboard())
+        await query.edit_message_text(
+            text="List leads:",
+            reply_markup=InlineKeyboardMarkup(list_leads_keyboard())
+        )
+
+    elif query.data == "delete_leads":
+
+        await query.edit_message_text(
+            text="Select a lead to delete:",
+            reply_markup=InlineKeyboardMarkup(list_leads_keyboard())
+        )
+    elif query.data in list_lead_id and query.message.text == "Select a lead to delete:":
+        delete_lead(query.data)
+
+    elif query.data == "back":
+        await query.edit_message_text(
+            "Main menu or previous options here.",
+            reply_markup=main_menu_keyboard()
+        )
 
 
 def main():
