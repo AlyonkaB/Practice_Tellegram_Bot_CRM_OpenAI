@@ -13,7 +13,7 @@ Before running the bot, make sure you have the following installed:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/your-telegram-bot.git
+git clone https://github.com/AlyonkaB/Practice_Tellegram_Bot_CRM_OpenAI.git
 ```
 
 2. Install all libraries from requirements.txt
